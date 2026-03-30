@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Chat met Nienke</h1>
+        <nav>
+            <ul>
+                <li><a href="bellen">Bel Nienke</a></li>
+                <li>Zoeken</li>
+                <li>Status</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <p>dag dropje, hoe is het?</p>
+            <time datetime="30-03-26 12:00">30-03-26 12:00</time>
+        </article>
+
+        <article>
+            <p>Reageer nouuu</p>
+            <time datetime="30-03-26 13:00">30-03-26 13:00</time>
+        </article>
+    </main>
+    
+    <footer>
+        <form action="send">
+            <button type="button">Neem spraakopname op</button>
+            <button type="button">Stop spraakopname</button>
+            <article aria-label="Opgenomen spraakbericht">  
+                <p>
+                    Spraakopname van 
+                    <time datetime="2026-03-30T13:20">30-03-26 13:20</time>
+                </p>
+                <audio controls>
+                    <source src="test.mp3">
+                    Je browser ondersteunt geen audio.
+                </audio>
+                <button type="button">Verwijder spraakopname</button>
+            </article>
+            <button type="submit">Verstuur spraakopname</button>
+        </form>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+body{
+    display: flex;
+    flex-direction: column;
+    gap: 5em;
+}
+
+footer form, footer article{
+    display: flex;
+    flex-direction: column;
+}
