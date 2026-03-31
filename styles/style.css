@@ -12,14 +12,19 @@ body{
     footer{
         background-color: cadetblue;
         padding: 1em;
+        form, article{
+            display: flex;
+            flex-direction: column;
+        }
     }
 }
 
-footer form, footer article{
-    display: flex;
-    flex-direction: column;
-}
 
 .sound-clips{
-    padding-block: 5em;
+    padding-block: 2em;
+}
+
+
+.audio-container{
+    display: flex;
 }

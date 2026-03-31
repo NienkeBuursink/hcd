@@ -47,6 +47,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             }
 
 
+
             // MARK: Add to HTML
             mediaRecorder.onstop = (e) => {
                 const now = new Date()
@@ -60,13 +61,13 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
                 let audioHTML = 
                 `<div class="audio-container">
-                    <p>
-                        You: <time>${date} ${time}</time>
-                    </p>
                     <audio controls>
                         <source src="${audioURL}">
                         Je browser ondersteunt geen audio.
                     </audio>
+                    <p>
+                        U: <time>${date} ${time}</time>
+                    </p>
                 </div>
                 <button class="delete-recording" type="button">Verwijder spraakopname</button>
                 <button type="submit">Verstuur spraakopname</button>`
@@ -109,7 +110,7 @@ soundClips.addEventListener("click", (e) => {
         if (soundClips.hasChildNodes()) { //https://www.geeksforgeeks.org/javascript/how-to-check-if-an-element-has-any-children-in-javascript/
             console.log("send")
             
-            main.appendChild(currentRecording)
+            main.prepend(currentRecording) // https://stackoverflow.com/questions/73543474/how-to-make-appendchild-method-on-top-of-elements
             deleteBtn.remove()
             e.target.remove()
         } else {
