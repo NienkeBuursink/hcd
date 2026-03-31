@@ -1,13 +1,15 @@
+const main = document.querySelector("main")
 const recordBtn = document.querySelector(".record")
 const stopRecordingBtn = document.querySelector(".stop-recording")
-const soundClips = document.querySelector(".sound-clips");
-const sendBtn = document.querySelector("button[type='submit']")
+const soundClips = document.querySelector(".sound-clips")
+
 
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API
 
+// MARK: check mic availability
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // console.log("getUserMedia supported.");
+    // console.log("getUserMedia supported.")
     navigator.mediaDevices
         .getUserMedia(
             // constraints - only audio needed for this app
@@ -22,12 +24,12 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
         // Success callback
         .then((stream) => {
-            console.log(stream)
             const mediaRecorder = new MediaRecorder(stream);
+
+            // MARK: recording
             recordBtn.onclick = () => {
                 mediaRecorder.start()
                 console.log(mediaRecorder.state)
-                console.log("recorder started")
                 recordBtn.style.background = "red"
             }
 
@@ -45,23 +47,29 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             }
 
 
+            // MARK: Add to HTML
             mediaRecorder.onstop = (e) => {
                 const now = new Date()
+                const date = now.toLocaleDateString() // chatGPT prompt: how can i make the local date less long into just date and time strings?
+                const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
                 const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
                 chunks = []
                 const audioURL = window.URL.createObjectURL(blob)
 
 
                 let audioHTML = 
-                `<p>
-                    Spraakopname van 
-                    <time datetime="${now}">${now}</time>
-                </p>
-                <audio controls>
-                    <source src="${audioURL}">
-                    Je browser ondersteunt geen audio.
-                </audio>
-                <button class="delete-recording" type="button">Verwijder spraakopname</button>`
+                `<div class="audio-container">
+                    <p>
+                        You: <time>${date} ${time}</time>
+                    </p>
+                    <audio controls>
+                        <source src="${audioURL}">
+                        Je browser ondersteunt geen audio.
+                    </audio>
+                </div>
+                <button class="delete-recording" type="button">Verwijder spraakopname</button>
+                <button type="submit">Verstuur spraakopname</button>`
 
                 soundClips.insertAdjacentHTML("beforeend", audioHTML)
 
@@ -87,3 +95,25 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 } else {
     console.log("getUserMedia not supported on your browser!")
 }
+
+
+
+
+// MARK: Send Audio
+
+soundClips.addEventListener("click", (e) => {
+    const currentRecording = soundClips.querySelector(".audio-container")
+    const deleteBtn = soundClips.querySelector(".delete-recording")
+    if (e.target && e.target.matches("button[type='submit']")) {
+        e.preventDefault()
+        if (soundClips.hasChildNodes()) { //https://www.geeksforgeeks.org/javascript/how-to-check-if-an-element-has-any-children-in-javascript/
+            console.log("send")
+            
+            main.appendChild(currentRecording)
+            deleteBtn.remove()
+            e.target.remove()
+        } else {
+            console.log("no send")
+        }  
+    }
+})

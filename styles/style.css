@@ -2,6 +2,17 @@ body{
     display: flex;
     flex-direction: column;
     gap: 5em;
+    header{
+        background-color: darkgreen;
+        padding: 1em;
+        * {
+            color: white;
+        }
+    }
+    footer{
+        background-color: cadetblue;
+        padding: 1em;
+    }
 }
 
 footer form, footer article{
@@ -10,7 +21,5 @@ footer form, footer article{
 }
 
 .sound-clips{
-    display: flex;
-    flex-direction: column;
     padding-block: 5em;
 }
