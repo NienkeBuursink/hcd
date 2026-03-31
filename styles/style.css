@@ -8,3 +8,9 @@ footer form, footer article{
     display: flex;
     flex-direction: column;
 }
+
+.sound-clips{
+    display: flex;
+    flex-direction: column;
+    padding-block: 5em;
+}
