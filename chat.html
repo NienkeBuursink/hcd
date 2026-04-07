@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat met Nienke</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="scripts/script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Chat met Nienke</h1>
+        <nav>
+            <ul>
+                <li><a href="bellen">Bel Nienke</a></li>
+                <li>Zoeken</li>
+                <li>Status</li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article>
+            <p>Reageer nou!</p>
+
+            <button aria-expanded="false" aria-controls="extra-info"> 
+                <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-controls -->
+                 <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-expanded -->
+                Meer info
+            </button>
+
+            <div class="extra-info" hidden aria-live="polite">
+                Dit bericht is geplaatst op 30 maart 2026 om 12 uur.
+            </div>
+        </article>
+
+        <article>
+            <p>Hoe is het?</p>
+
+            <button aria-expanded="false" aria-controls="extra-info">
+                Meer info
+            </button>
+
+            <div class="extra-info" hidden aria-live="polite">
+                Dit bericht is geplaatst op 30 maart 2026 om 13 uur.
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <form action="send">
+            <button class="record" type="button">Neem spraakopname op</button>
+
+            <article class="sound-clips" aria-label="Opgenomen spraakbericht">
+                <!-- opgenomen spraakbericht -->
+            </article>
+        </form>
+    </footer>
+</body>
+
+</html>

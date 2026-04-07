@@ -4,6 +4,10 @@
 * {
     margin: 0;
     padding: 0;
+    &:focus{
+        padding: 1em;
+        border: solid lime .5em;
+    }
 }
 
 body{
