@@ -23,20 +23,35 @@
 
     <main>
         <article>
-            <p>Reageer nouuu</p>
-            <time datetime="30-03-26 13:00">30/03/26 13:00</time>
+            <p>Reageer nou!</p>
+
+            <button aria-expanded="false" aria-controls="extra-info"> 
+                <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-controls -->
+                 <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-expanded -->
+                Meer info
+            </button>
+
+            <div class="extra-info" hidden aria-live="polite">
+                Dit bericht is geplaatst op 30 maart 2026 om 12 uur.
+            </div>
         </article>
 
         <article>
             <p>Hoe is het?</p>
-            <time datetime="30-03-26 12:00">30/03/26 12:00</time>
+
+            <button aria-expanded="false" aria-controls="extra-info">
+                Meer info
+            </button>
+
+            <div class="extra-info" hidden aria-live="polite">
+                Dit bericht is geplaatst op 30 maart 2026 om 13 uur.
+            </div>
         </article>
     </main>
-    
+
     <footer>
         <form action="send">
             <button class="record" type="button">Neem spraakopname op</button>
-            <button class="stop-recording" type="button">Stop spraakopname</button>
 
             <article class="sound-clips" aria-label="Opgenomen spraakbericht">
                 <!-- opgenomen spraakbericht -->

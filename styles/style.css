@@ -1,3 +1,11 @@
+/* ////////////// */
+/* MARK: Basics 
+/* ////////////// */
+* {
+    margin: 0;
+    padding: 0;
+}
+
 body{
     display: flex;
     flex-direction: column;
@@ -5,9 +13,15 @@ body{
     header{
         background-color: darkgreen;
         padding: 1em;
+        ul{
+            list-style-position: inside;
+        }
         * {
             color: white;
         }
+    }
+    main{
+        padding: 1em;
     }
     footer{
         background-color: cadetblue;
@@ -28,3 +42,20 @@ body{
 .audio-container{
     display: flex;
 }
+
+
+article{
+    padding-bottom: 2em;
+}
+
+/* ////////////// */
+/* MARK: audio controls
+/* ////////////// */
+
+/* https://stackoverflow.com/questions/59024693/style-the-audio-html-tag */
+audio{
+    &::-webkit-media-controls-mute-button{
+        display: none;
+    }
+}
+
