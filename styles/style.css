@@ -4,10 +4,14 @@
 * {
     margin: 0;
     padding: 0;
+    font-size: 1.2em;
     &:focus{
-        padding: 1em;
         border: solid lime .5em;
     }
+}
+
+h1{
+    font-size: 3em;
 }
 
 body{
@@ -15,21 +19,23 @@ body{
     flex-direction: column;
     gap: 5em;
     header{
-        background-color: darkgreen;
+        background-color: rgb(229, 255, 0);
         padding: 1em;
+        border-bottom: solid 10px red;
         ul{
             list-style-position: inside;
         }
         * {
-            color: white;
+            color: black;
         }
     }
     main{
         padding: 1em;
     }
     footer{
-        background-color: cadetblue;
+        background-color: rgb(0, 26, 255);
         padding: 1em;
+        border-top: solid 10px red;
         form, article{
             display: flex;
             flex-direction: column;
@@ -37,19 +43,23 @@ body{
     }
 }
 
-
-.sound-clips{
-    padding-block: 2em;
+article:not(footer .audio-container){
+    padding-block: .5em;
+    margin-block: 1em;
+    border: solid 10px red;
 }
 
-
-.audio-container{
-    display: flex;
+li:has(.audio-container){
+    margin-bottom: 1em;
+    border: solid 10px red;
 }
 
+.record{
+    margin-bottom: 1em;
+}
 
-article{
-    padding-bottom: 2em;
+.delete-all{
+    display: none;
 }
 
 /* ////////////// */
@@ -58,7 +68,9 @@ article{
 
 /* https://stackoverflow.com/questions/59024693/style-the-audio-html-tag */
 audio{
-    &::-webkit-media-controls-mute-button{
+    &::-webkit-media-controls-mute-button,
+    &::-webkit-media-controls-volume-slider,
+    &::-webkit-media-controls-volume-slider-container{
         display: none;
     }
 }

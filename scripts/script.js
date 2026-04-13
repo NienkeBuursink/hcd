@@ -3,13 +3,15 @@ const recordBtn = document.querySelector(".record")
 const soundClips = document.querySelector(".sound-clips")
 const startAudioRecording = new Audio("audio/start-opname.mp3")
 const stopAudioRecording = new Audio("audio/stop-opname.mp3")
+const deleteAllRecordings = document.querySelector(".delete-all")
+
+let fullTranscript = ""
 
 
 
+// MARK: Check microphone availability
 // https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API/Using_the_MediaStream_Recording_API
-// MARK: Check mic availability
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    // console.log("getUserMedia supported.")
     navigator.mediaDevices
         .getUserMedia(
             // constraints - only audio needed for this app
@@ -22,18 +24,30 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
         // Success callback
         .then((stream) => {
-            const mediaRecorder = new MediaRecorder(stream);
+            const mediaRecorder = new MediaRecorder(stream)
+
+            // https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API
+            const recognition = new SpeechRecognition()
+
+            recognition.lang = "nl-NL"
+            recognition.continuous = true
+            recognition.interimResults = true
+            recognition.maxAlternatives = 1
+
+
 
             // MARK: recording
             recordBtn.onclick = () => {
                 if (!recordBtn.classList.contains("recording")) {
                     mediaRecorder.start()
+                    recognition.start()
                     startAudioRecording.play()
                     recordBtn.style.background = "red"
                     recordBtn.classList.add("recording")
                     recordBtn.textContent = "Stop opnemen"
                 } else {
                     mediaRecorder.stop()
+                    recognition.stop()
                     stopAudioRecording.play()
                     recordBtn.style.background = ""
                     recordBtn.classList.remove("recording")
@@ -45,7 +59,21 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             let chunks = []
             mediaRecorder.ondataavailable = (e) => {
                 chunks.push(e.data)
-            };
+            }
+
+            recognition.onstart = () => console.log("speech started")
+            recognition.onend = () => console.log("speech ended")
+            recognition.onerror = (e) => console.log("speech error:", e.error, e.message)
+
+            recognition.onresult = (event) => {
+                const result = event.results[event.results.length - 1]
+
+                if (result.isFinal) {
+                    fullTranscript += result[0].transcript + " "
+                }
+            }
+
+
 
 
             // MARK: Add to HTML
@@ -62,12 +90,13 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
                 const readableDateTime = formatter.format(now)
 
-                const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" })
+                const blob = new Blob(chunks, { type: "audio/ogg codecs=opus" })
                 chunks = []
                 const audioURL = window.URL.createObjectURL(blob)
 
                 let audioHTML = `
-                    <article class="audio-container">
+                <li>
+                    <article class="audio-container" tabindex="0">
                         <audio controls>
                             <source src="${audioURL}">
                             Je browser ondersteunt geen audio.
@@ -75,15 +104,22 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                     </article>
 
                     <button class="delete-recording" type="button">Verwijder spraakopname</button>
-                    <button type="submit">Verstuur spraakopname</button>`
+                    <button type="submit">Verstuur spraakopname</button>
+                </li>`
 
                 soundClips.insertAdjacentHTML("beforeend", audioHTML)
-
+                
+                if(soundClips.querySelectorAll('li').length > 1){
+                    deleteAllRecordings.style.display = 'block'
+                }
+                
+                fullTranscript = ""
             }
 
             soundClips.addEventListener("click", (e) => {
-                if (e.target && e.target.matches("button.delete-recording")) {
-                    e.target.closest('.recording')?.remove() || (soundClips.innerHTML = '')
+                const li = e.target.closest('li')
+                if(li){
+                    li.remove()
                 }
             })
         })
@@ -100,13 +136,13 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
 
 
-// MARK: Send Audio
 
+// MARK: Send Audio
 soundClips.addEventListener("click", (e) => {
     if (e.target && e.target.matches("button[type='submit']")) {
         e.preventDefault()
 
-        const article = e.target.previousElementSibling.previousElementSibling // je audio article
+        const article = e.target.previousElementSibling.previousElementSibling // https://developer.mozilla.org/en-US/docs/Web/API/Element/previousElementSibling
         const deleteBtn = soundClips.querySelector(".delete-recording")
 
         // Extra info
@@ -127,20 +163,31 @@ soundClips.addEventListener("click", (e) => {
         article.insertAdjacentHTML("afterbegin", whichPersonHTML) // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement#:~:text='beforebegin'%20%3A%20Before%20the%20targetElement,targetElement%20%2C%20after%20its%20last%20child.
 
         const extraInfoHTML = `
-        <button aria-expanded="false" aria-controls="extra-info">
+        <button aria-expanded="false" hidden aria-controls="extra-info">
             Meer info
         </button>
 
-        <div class="extra-info" hidden aria-live="polite">
-            Dit bericht is geplaatst op 
-            <time datetime="${now.toISOString()}">${readableDateTime}</time>.
-        </div>`
+        <ul class="extra-info" hidden aria-live="polite">
+            <li> Dit bericht is geplaatst op <time datetime="${now.toISOString()}">${readableDateTime}</time>.</li>
+            <li class="transcript"> </li>
+        </ul>`
 
         article.insertAdjacentHTML("beforeend", extraInfoHTML)
 
-        // verplaats naar chat
-        main.prepend(article)
+        const transcript = article.querySelector(".transcript")
 
+        if (fullTranscript.trim() !== "") {
+            transcript.textContent = fullTranscript
+        } else {
+            transcript.remove()
+        }
+
+        // verplaats naar chat
+        main.append(article)
+
+        const li = e.target.closest("li")
+        
+        li.remove()
         deleteBtn.remove()
         e.target.remove()
     }
@@ -149,16 +196,30 @@ soundClips.addEventListener("click", (e) => {
 
 
 
+
+//MARK: Remove all audios
+deleteAllRecordings.addEventListener("click", () => {
+    soundClips.innerHTML = ''
+    deleteAllRecordings.style.display = 'none'
+})
+
+
+
+
+
 //MARK: Extra info 
-main.addEventListener("click", (e) => {
-    if (e.target && e.target.matches("button[aria-expanded]")) {
-        const button = e.target
-        const article = button.closest('article')
-        const content = article.querySelector('.extra-info')
+// https://stackoverflow.com/questions/2511388/how-can-i-add-a-keyboard-shortcut-to-an-existing-javascript-function
+document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() !== "i") return
 
-        const isExpanded = button.getAttribute('aria-expanded') === 'true' // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-expanded 
+    const message = document.activeElement.closest("article")
+    if (!message) return
 
-        button.setAttribute('aria-expanded', !isExpanded)
-        content.hidden = isExpanded
-    }
+    const button = message.querySelector("button[aria-expanded]")
+    const content = message.querySelector(".extra-info")
+
+    const isExpanded = button.getAttribute("aria-expanded") === "true"
+
+    button.setAttribute("aria-expanded", !isExpanded)
+    content.hidden = isExpanded
 })

@@ -12,40 +12,45 @@
 <body>
     <header>
         <h1>Chat met Nienke</h1>
+        <p>Om meer informatie te weten over een bericht, klik op 'i' tijdens het focussen op eeen bericht.</p>
         <nav>
             <ul>
                 <li><a href="bellen">Bel Nienke</a></li>
-                <li>Zoeken</li>
-                <li>Status</li>
+                <li>
+                    <label for="search-chat">Zoek in chats</label>
+                    <input type="search" id="search-chat"/>
+                    <button type="button">Zoeken</button>
+                </li>
+                <li>Status: Online</li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <article>
+        <article tabindex="0"> <!-- ChatGPT prompt: hoe zorg ik ervoor dat je alsnog een focus state hebt als je met een screenreader door de articles heen gaat-->
             <p>Reageer nou!</p>
 
-            <button aria-expanded="false" aria-controls="extra-info"> 
+            <button aria-expanded="false" hidden aria-controls="extra-info">
                 <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-controls -->
-                 <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-expanded -->
+                <!-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-expanded -->
                 Meer info
             </button>
 
-            <div class="extra-info" hidden aria-live="polite">
-                Dit bericht is geplaatst op 30 maart 2026 om 12 uur.
-            </div>
+            <ul class="extra-info" hidden aria-live="polite">
+                <li>Dit bericht is geplaatst op 30 maart 2026 om 12 uur.</li>
+            </ul>
         </article>
 
-        <article>
+        <article tabindex="0">
             <p>Hoe is het?</p>
 
-            <button aria-expanded="false" aria-controls="extra-info">
+            <button aria-expanded="false" hidden aria-controls="extra-info">
                 Meer info
             </button>
 
-            <div class="extra-info" hidden aria-live="polite">
-                Dit bericht is geplaatst op 30 maart 2026 om 13 uur.
-            </div>
+            <ul class="extra-info" hidden aria-live="polite">
+                <li>Dit bericht is geplaatst op 30 maart 2026 om 13 uur.</li>
+            </ul>
         </article>
     </main>
 
@@ -53,9 +58,10 @@
         <form action="send">
             <button class="record" type="button">Neem spraakopname op</button>
 
-            <article class="sound-clips" aria-label="Opgenomen spraakbericht">
-                <!-- opgenomen spraakbericht -->
-            </article>
+            <ul class="sound-clips" aria-label="Hier komen je opgenomen spraakberichten te staan voor het versturen">
+                <!-- opgenomen spraakberichten -->
+            </ul>
+            <button class="delete-all" type="button">Verwijder alle spraakopnames</button>
         </form>
     </footer>
 </body>
