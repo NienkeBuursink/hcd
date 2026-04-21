@@ -1,9 +1,33 @@
 const main = document.querySelector("main")
 const recordBtn = document.querySelector(".record")
 const soundClips = document.querySelector(".sound-clips")
+const deleteAllRecordings = document.querySelector(".delete-all")
+const links = document.querySelectorAll("a")
+
+
 const startAudioRecording = new Audio("audio/start-opname.mp3")
 const stopAudioRecording = new Audio("audio/stop-opname.mp3")
-const deleteAllRecordings = document.querySelector(".delete-all")
+const sendMesage = new Audio("audio/send.mp3")
+const expandSound = new Audio("audio/grow.mp3")
+const collapseSound = new Audio("audio/shrink.mp3")
+const pageSound = new Audio("audio/swap-screen.mp3")
+const deleteSound = new Audio("audio/delete.mp3")
+const deleteAllSound = new Audio("audio/delete-all.mp3")
+const inputSound = new Audio("audio/input-sound.mp3")
+
+links.forEach(link => {
+    link.addEventListener("click", (e) => {
+        e.preventDefault()
+        pageSound.play()
+
+        const url = link.href
+
+        setTimeout(() => {
+            window.location.href = url
+        }, 1500)
+    })
+})
+
 
 let fullTranscript = ""
 
@@ -41,6 +65,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 if (!recordBtn.classList.contains("recording")) {
                     mediaRecorder.start()
                     recognition.start()
+                    startAudioRecording.volume = 0.5
                     startAudioRecording.play()
                     recordBtn.style.background = "red"
                     recordBtn.classList.add("recording")
@@ -120,6 +145,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 const li = e.target.closest('li')
                 if(li){
                     li.remove()
+                    deleteSound.play()
                 }
             })
         })
@@ -158,20 +184,21 @@ soundClips.addEventListener("click", (e) => {
 
         const readableDateTime = formatter.format(now)
 
-        const whichPersonHTML = `<p>U:</p>`
+        const whichPersonHTML = `<h2>U stuurt audio:</h2>`
 
         article.insertAdjacentHTML("afterbegin", whichPersonHTML) // https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentElement#:~:text='beforebegin'%20%3A%20Before%20the%20targetElement,targetElement%20%2C%20after%20its%20last%20child.
 
         const extraInfoHTML = `
-        <button aria-expanded="false" hidden aria-controls="extra-info">
+        <button aria-expanded="false" aria-hidden="true" aria-controls="extra-info">
             Meer info
         </button>
 
         <ul class="extra-info" hidden aria-live="polite">
             <li> Dit bericht is geplaatst op <time datetime="${now.toISOString()}">${readableDateTime}</time>.</li>
-            <li class="transcript"> </li>
+            <li><p class="transcript"></p></li>
         </ul>`
 
+        sendMesage.play()
         article.insertAdjacentHTML("beforeend", extraInfoHTML)
 
         const transcript = article.querySelector(".transcript")
@@ -201,6 +228,7 @@ soundClips.addEventListener("click", (e) => {
 deleteAllRecordings.addEventListener("click", () => {
     soundClips.innerHTML = ''
     deleteAllRecordings.style.display = 'none'
+    deleteAllSound.play()
 })
 
 
@@ -209,17 +237,77 @@ deleteAllRecordings.addEventListener("click", () => {
 
 //MARK: Extra info 
 // https://stackoverflow.com/questions/2511388/how-can-i-add-a-keyboard-shortcut-to-an-existing-javascript-function
+function toggleExtraInfo(message, forceClose = false) {
+    const button = message.querySelector("button[aria-expanded]")
+    const content = message.querySelector(".extra-info")
+    if (!button || !content) return
+
+    const isOpen = button.getAttribute("aria-expanded") === "true"
+
+    const shouldClose = forceClose || isOpen
+
+    button.setAttribute("aria-expanded", !shouldClose)
+    content.hidden = shouldClose
+
+    if (shouldClose && isOpen) {
+        collapseSound.currentTime = 0
+        collapseSound.play()
+    } else if (!shouldClose) {
+        expandSound.currentTime = 0
+        expandSound.volume = 0.3
+        expandSound.play()
+    }
+}
+
+// shortcut met y
 document.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() !== "i") return
+    if (e.key.toLowerCase() !== "y") return
 
     const message = document.activeElement.closest("article")
     if (!message) return
 
-    const button = message.querySelector("button[aria-expanded]")
-    const content = message.querySelector(".extra-info")
+    toggleExtraInfo(message)
+})
 
-    const isExpanded = button.getAttribute("aria-expanded") === "true"
+// gewone klik
+document.addEventListener("click", (e) => {
+    const button = e.target.closest("button[aria-expanded]")
+    if (!button) return
 
-    button.setAttribute("aria-expanded", !isExpanded)
-    content.hidden = isExpanded
+    toggleExtraInfo(button.closest("article"))
+})
+
+// wegtabben
+document.addEventListener("focusout", (e) => {
+    const chat = e.target.closest("article")
+    if (!chat) return
+
+    if (chat.contains(e.relatedTarget)) return
+
+    toggleExtraInfo(chat, true)
+})
+
+
+
+
+
+//MARK: Search for audio
+//https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/search
+const searchBar = document.querySelector("input[type='search']")
+
+searchBar.addEventListener("input", () => {
+    inputSound.currentTime = 0
+    inputSound.play()
+    const searchTerm = searchBar.value.toLowerCase()
+    const searchArticles = document.querySelectorAll("article")
+
+    searchArticles.forEach(article => {
+        const text = article.textContent.toLowerCase()
+
+        if (text.includes(searchTerm)) {
+            article.style.display = "block"
+        } else {
+            article.style.display = "none"
+        }
+    })
 })

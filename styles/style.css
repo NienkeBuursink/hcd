@@ -2,11 +2,13 @@
 /* MARK: Basics 
 /* ////////////// */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-size: 1.2em;
+    font-size: 1.3em;
+    font-family: sans-serif;
     &:focus{
-        border: solid lime .5em;
+        border: solid lime .4em;
     }
 }
 
@@ -21,9 +23,13 @@ body{
     header{
         background-color: rgb(229, 255, 0);
         padding: 1em;
-        border-bottom: solid 10px red;
+        border-bottom: solid 8px red;
+        width: 100%;
         ul{
             list-style-position: inside;
+            input{
+                width: 100%;
+            }
         }
         * {
             color: black;
@@ -35,7 +41,7 @@ body{
     footer{
         background-color: rgb(0, 26, 255);
         padding: 1em;
-        border-top: solid 10px red;
+        border-top: solid 8px red;
         form, article{
             display: flex;
             flex-direction: column;
@@ -46,12 +52,16 @@ body{
 article:not(footer .audio-container){
     padding-block: .5em;
     margin-block: 1em;
-    border: solid 10px red;
+    border: solid 8px red;
+    &:focus-within {
+        outline: .4em solid lime;
+        outline-offset: 4px;
+    }
 }
 
 li:has(.audio-container){
     margin-bottom: 1em;
-    border: solid 10px red;
+    border: solid 8px red;
 }
 
 .record{
