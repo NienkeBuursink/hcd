@@ -3,6 +3,10 @@ const recordBtn = document.querySelector(".record")
 const soundClips = document.querySelector(".sound-clips")
 const deleteAllRecordings = document.querySelector(".delete-all")
 const links = document.querySelectorAll("a")
+const sentAudio = document.querySelector("audio")
+if (sentAudio) {
+    sentAudio.volume = 0.02 //https://stackoverflow.com/questions/58044503/how-to-set-volume-of-audio-file-in-javascript
+}
 
 
 const startAudioRecording = new Audio("audio/start-opname.mp3")
@@ -18,6 +22,7 @@ const inputSound = new Audio("audio/input-sound.mp3")
 links.forEach(link => {
     link.addEventListener("click", (e) => {
         e.preventDefault()
+        pageSound.volume = 0.02
         pageSound.play()
 
         const url = link.href
@@ -65,7 +70,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 if (!recordBtn.classList.contains("recording")) {
                     mediaRecorder.start()
                     recognition.start()
-                    startAudioRecording.volume = 0.5
+                    startAudioRecording.volume = 0.005
                     startAudioRecording.play()
                     recordBtn.style.background = "red"
                     recordBtn.classList.add("recording")
@@ -73,6 +78,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 } else {
                     mediaRecorder.stop()
                     recognition.stop()
+                    stopAudioRecording.volume = 0.03
                     stopAudioRecording.play()
                     recordBtn.style.background = ""
                     recordBtn.classList.remove("recording")
@@ -145,6 +151,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 const li = e.target.closest('li')
                 if(li){
                     li.remove()
+                    deleteSound.volume = 0.006
                     deleteSound.play()
                 }
             })
@@ -198,6 +205,7 @@ soundClips.addEventListener("click", (e) => {
             <li><p class="transcript"></p></li>
         </ul>`
 
+        sendMesage.volume = 0.002
         sendMesage.play()
         article.insertAdjacentHTML("beforeend", extraInfoHTML)
 
@@ -228,6 +236,7 @@ soundClips.addEventListener("click", (e) => {
 deleteAllRecordings.addEventListener("click", () => {
     soundClips.innerHTML = ''
     deleteAllRecordings.style.display = 'none'
+    deleteAllSound.volume = 0.005
     deleteAllSound.play()
 })
 
@@ -251,10 +260,11 @@ function toggleExtraInfo(message, forceClose = false) {
 
     if (shouldClose && isOpen) {
         collapseSound.currentTime = 0
+        collapseSound.volume = 0.01
         collapseSound.play()
     } else if (!shouldClose) {
         expandSound.currentTime = 0
-        expandSound.volume = 0.3
+        expandSound.volume = 0.003
         expandSound.play()
     }
 }
@@ -297,6 +307,7 @@ const searchBar = document.querySelector("input[type='search']")
 
 searchBar.addEventListener("input", () => {
     inputSound.currentTime = 0
+    inputSound.volume = 0.01
     inputSound.play()
     const searchTerm = searchBar.value.toLowerCase()
     const searchArticles = document.querySelectorAll("article")
